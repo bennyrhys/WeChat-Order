@@ -41,6 +41,7 @@ public class LoggerTest {
         log.debug("debug...");
         log.info("info...");
         log.error("error...");
+        log.warn("warn...");
 
 //        引入变量 【建议使用{}占位符】
         String name = "bennyrhys";

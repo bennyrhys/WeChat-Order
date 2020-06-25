@@ -426,6 +426,88 @@ application.yml只能简单配置（日志路径、格式）
 
 logbak-spring.xml可以复杂配置（区分info和error日志，每天一个日志）
 
+注意：可以通过springframeworkjar包org-logging-logback下默认配置引用信息
+
+**application.yml**
+
+```yml
+# 日志配置
+logging:
+  pattern:
+    console: "%d - %msg%n"
+#  level:
+#    com.bennyrhys.wechat_order.LoggerTest: debug
+
+#  level: debug # 直接指定级别
+#  path: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/ # 弃用了
+#  file: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/sell.log # 弃用了
+```
+
+**logback-spring.xml**
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+<!--    控制台输出-->
+    <appender name = "consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %d - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+<!--    文件info -->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--        过滤级别 只保留,条件等级比对过滤
+                    public enum FilterReply {
+                        DENY, //禁止
+                        NEUTRAL, // 忽略
+                        ACCEPT; // 接受
+        -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+<!--        滚动策略 每天输出一个文件+路径-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+<!--            路径-->
+            <fileNamePattern>/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/info.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <!--    文件error -->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!--        过滤级别 只保留范围：比当前范围大-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+        <!--        滚动策略 每天输出一个文件+路径-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--            路径-->
+            <fileNamePattern>/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/error.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+<!--级别-->
+    <root level="INFO">
+        <appender-ref ref="consoleLog" />
+        <appender-ref ref="fileInfoLog" />
+        <appender-ref ref="fileErrorLog" />
+    </root>
+
+</configuration>
+```
+
 ## API
 
 ###商品列表

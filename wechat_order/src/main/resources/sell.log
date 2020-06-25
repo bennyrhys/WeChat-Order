@@ -1,0 +1,10 @@
+2020-06-25 18:13:39.000  WARN 48956 --- [main] o.s.boot.StartupInfoLogger               : InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+2020-06-25 18:13:44.007  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : Starting LoggerTest on bennyrhysdeMacBook-Pro.local with PID 48956 (started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+2020-06-25 18:13:44.008  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : No active profile set, falling back to default profiles: default
+2020-06-25 18:13:46.562  INFO 48956 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-06-25 18:13:47.222  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : Started LoggerTest in 19.121 seconds (JVM running for 21.907)
+2020-06-25 18:13:47.670  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : info...
+2020-06-25 18:13:47.672 ERROR 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : error...
+2020-06-25 18:13:47.672  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : name:bennyrhys, tell:158
+2020-06-25 18:13:47.672  INFO 48956 --- [main] com.bennyrhys.wechat_order.LoggerTest    : name:bennyrhys, tell:158
+2020-06-25 18:13:47.717  INFO 48956 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'

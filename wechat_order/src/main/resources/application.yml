@@ -1,3 +1,15 @@
 #spring:
 #  profiles:
 #    active: dev
+
+# 日志配置
+logging:
+  pattern:
+    console: "%d - %msg%n"
+#  level:
+#    com.bennyrhys.wechat_order.LoggerTest: debug
+
+#  level: debug # 直接指定级别
+#  path: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/ # 弃用了
+#  file: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/sell.log # 弃用了
+
