@@ -1,6 +1,6 @@
 [TOC]
 
-
+作者：bennyrhys@163.com
 
 # 概述
 
@@ -158,7 +158,7 @@ create table `product_info`(
 	`product_price` decimal(8,2) not null comment '商品单价',
 	`product_stock` int not null comment '商品库存',
 	`product_description` varchar(64) comment '商品描述',
-	`product_icon` varchar(512) comment '商品图',
+	`product_icon` varchar(512) comment '商品小图',
 	`category_type` int not null comment '类目编号',
 	`create_time` timestamp not null default current_timestamp comment '创建时间',
 	`update_time` timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
@@ -198,7 +198,7 @@ create table `order_detail`(
 	`product_name` varchar(64) not null comment '商品名称',
 	`product_price` decimal(8,2) not null comment '商品价格',
 	`product_quantity` int not null comment '商品数量',
-	`product_icon` varchar(512) not null comment '商品图',
+	`product_icon` varchar(512) not null comment '商品小图',
 	`create_time` timestamp not null default current_timestamp comment '创建时间',
 	`update_time` timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
 	primary key (`detail_id`),
@@ -218,11 +218,15 @@ create table `seller_info` (
 
 # 虚拟机
 
-## 概要
+运行虚拟机：保证虚拟机和主机相互ping通
+
+联通虚拟机中的数据库：创建数据库选择utf-8mb4(存微信聊天的表情)
+
+## 配置环境
 
 虚拟机配置好vue+mysql+redis环境，本次只专注后端开发。
 
-我的虚拟机端口号192.168.210.131
+`ifconfig`我的虚拟机端口号192.168.210.132
 
 访问端口号测试微信登录后台。
 
@@ -277,6 +281,26 @@ tomcat
 * 启动 systemctl start tomcat
 * 停止 systemctl stop tomcat
 
+# 本地环境
+
+Jdk 1.8
+
+Maven 3.3.9
+
+使用阿里云的镜像地址会快点`~ vim .m2/settings.xml`
+
+```xml
+    <mirror>
+      <id>alimaven</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+```
+
+开发idea
+
 # 日志框架
 
 ## 概述
@@ -285,7 +309,7 @@ tomcat
 
 例如：用户下线，接口超时，数据库崩溃
 
-## 能力
+
 
 定制输出目标
 
@@ -296,6 +320,8 @@ tomcat
 运行时选择性输出
 
 灵活配置-运维
+
+优秀性能 
 
 ## 对比
 
@@ -313,30 +339,47 @@ slf4j
 
 hibinate的jboss-logging
 
-| 日志门面                                        | 日志实现                                          |
-| ----------------------------------------------- | ------------------------------------------------- |
-| JCL                                             | Log4j（作者ceki，太烂了作者不想改）               |
-| SLF4j（作者ceki ）                              | Log4j2（apach借名，优于Logout性能， 先进坑多）    |
-| Jobs-logging（诞生就不是为服务大众，不受亲睐 ） | Logout（作者ceki）                                |
-|                                                 | Jul（虽然官方，但实现简陋，多方面受到开发者吐槽） |
+| 日志门面                                        | 日志实现                                                    |
+| ----------------------------------------------- | ----------------------------------------------------------- |
+| JCL                                             | Log4j（作者ceki，太烂了作者不想改）                         |
+| SLF4j（作者ceki ）                              | Log4j2（apach借名，优于Logback性能， 因为太先进，所以坑多） |
+| Jobs-logging（诞生就不是为服务大众，不受亲睐 ） | Logback（作者ceki）                                         |
+|                                                 | Jul（虽然官方，但实现简陋，多方面受到开发者吐槽）           |
 
 **推荐：日志门面SLF4j， 日志实现logback**
 
-## 测试日志-简单版
+## 测试日志-简版
+
+传入包名创建日志工厂
+
+引入lambol的@Slf4j直接log.
+
+打印变量
 
 ```java
 package com.bennyrhys.wechat_order;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * @Author bennyrhys
+ * @Date 2020-06-24 22:12
+ */
 @SpringBootTest
-class WechatOrderApplicationTests {
-//指定当前输出所对应的类
-    private final Logger logger = LoggerFactory.getLogger(WechatOrderApplicationTests.class);
-//每次这样写麻烦，用注解代替
+@Slf4j
+public class LoggerTest {
+
+    /**
+     * 指定当前输出所对应的类
+     * 每次这样写麻烦，用注解代替
+     *
+     * 引入@slf4j 包名lambok @Data也是lambok，pom先引入lombok小插件 log代替logger
+     * 不仅在类的get\set方法带来很大便捷，日志使用也很便捷
+     */
+//    private final Logger logger = LoggerFactory.getLogger(LoggerTest.class);
+
     /**
      * 测试-日志
      * 快捷键：
@@ -348,20 +391,42 @@ class WechatOrderApplicationTests {
      *     TRACE(0, "TRACE");
      */
     @Test
-    void contextLoads() {
-        logger.info("info..............");
-        logger.debug("debug..............");
-        logger.error("error..............");
-    }
+    public void test1(){
+//        logger.debug("debug...");
+//        logger.info("info...");
+//        logger.error("error...");
 
+//        引入@Slf4j后
+        log.debug("debug...");
+        log.info("info...");
+        log.error("error...");
+
+//        引入变量 【建议使用{}占位符】
+        String name = "bennyrhys";
+        String tell = "158";
+        log.info("name:" + name + ", tell:" + tell);
+        log.info("name:{}, tell:{}", name, tell);
+    }
 }
 ```
 
+pom.xml
 
+```xml
+<!--        添加小工具 日志方便，get、set方便-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+```
+
+## logbak配置
+
+application.yml只能简单配置（日志路径、格式）
+
+logbak-spring.xml可以复杂配置（区分info和error日志，每天一个日志）
 
 ## API
-
-
 
 ###商品列表
 
@@ -830,4 +895,56 @@ returnUrl: http://xxx.com/abc/order/161899085773669363
 ```
 http://xxx.com/abc/order/161899085773669363
 ```
+
+# 1.x-2.x版本升级
+
+jpa
+
+findOne->findById返回值Optional对象，
+
+暂时解决抛红.get()。之前查不到返回null但是.get（）会抛异常
+
+.orElse（null），指定查不到返回null
+
+
+
+配置不能用驼峰
+
+projectUrl
+
+Project-url
+
+
+
+projrctService
+
+findOne()可以添加图片到又拍云。
+
+写法视频13.42
+
+
+
+数据库链接
+
+Cj.
+
+
+
+Server.ontext-path -> server.servlet.context-path:/sell 
+
+为什么多servlet因为2.0多了webflux特性
+
+
+
+警告废弃
+
+@NotEmpty，进入注解更换包
+
+
+
+new pagerequest（）-> pagerequest（）.of
+
+
+
+URLEncode.encode
 

@@ -1,4 +1,4 @@
-server:
-  port: 8080
-  servlet:
-    context-path: /wx_order
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /wx_order
