@@ -31,6 +31,26 @@
 
 ## 配置
 
+git clone https://git.imooc.com/coding-117/coding-117.git
+
+切换标签分支
+
+git checkout -b xxx xxx
+
+查看当前分支
+
+git log
+
+返回刚刚已切换的标签
+
+git checkout -b xxx 
+
+终端插件
+
+Zsh autosuggestions
+
+
+
 Idea2019
 
 Java -version1.8.0.111
@@ -160,11 +180,12 @@ create table `product_info`(
 	`product_description` varchar(64) comment '商品描述',
 	`product_icon` varchar(512) comment '商品小图',
 	`category_type` int not null comment '类目编号',
+  `product_status` tinyint(3) DEFAULT '0' COMMENT '商品状态,0正常1下架',
 	`create_time` timestamp not null default current_timestamp comment '创建时间',
 	`update_time` timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
 	primary key (`product_id`)
 )comment '商品表';
-    `product_status` tinyint(3) DEFAULT '0' COMMENT '商品状态,0正常1下架',
+
 -- 类目表
 create table `product_category`(
 	`category_id` int not null auto_increment comment '类目id',
@@ -1029,4 +1050,194 @@ new pagerequest（）-> pagerequest（）.of
 
 
 URLEncode.encode
+
+# Dao与测试
+
+增删改查
+
+时间自动更新
+
+事务回滚
+
+根据jpa规则写接口方法
+
+pom.xml
+
+```xml
+<!--        添加小工具 日志方便，get、set方便【idea中下载插件lombok 】-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+<!--        引入数据库-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+<!--        jpa操作数据库-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+```
+
+application.yml
+
+```yml
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.210.132/db_wxds?characterEncoding=utf-8&userSSL=false
+  jpa:
+    show-sql: true
+```
+
+属性ProductCategory
+
+```java
+package com.bennyrhys.wechat_order.daoobject;
+
+import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+/**
+ * 类目
+ * 注意表名：idea中驼峰，sql表是_。springDataJpa做的映射。（如果非要自定义idea的表名,下边@Table，不建议）
+ * @Author bennyrhys
+ * @Date 2020-06-26 10:28
+ */
+//@Table(name = "s_my_table")
+// 数据库映射成对象
+@Entity
+// 自动更新时间
+@DynamicUpdate
+
+//  每次属性类型改变不想重写get、set方法生成麻烦。那就全部去掉@Data代替【插件lombok，不会影响性能，打包时自动添加get、set】
+@Data
+public class ProductCategory {
+//    字段命名也是对应_为驼峰
+//    类目id【主键 自增指定生成策略】
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer categoryId;
+//    类目名称
+    private String categoryName;
+//    类目编号
+    private Integer categoryType;
+////    创建时间
+//    private Date createTime;
+////    更新时间
+//    private Date updateTime;
+
+//    get、set toString
+
+}
+```
+
+Dao-ProductCategoryRepository
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+/**
+ * @Author bennyrhys
+ * @Date 2020-06-26 10:40
+ */
+// 继承jpa<对象， 主键类型>
+//    直接通过接口名创建测试类
+public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
+//    注意需要按照指定格式
+//    通过类目编号数组查询类目
+    List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList);
+}
+```
+
+测试ProductCategoryRepositoryTest
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
+
+import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
+
+
+/**
+ * @Author bennyrhys
+ * @Date 2020-06-26 10:42
+ */
+@SpringBootTest
+public class ProductCategoryRepositoryTest {
+    @Autowired
+    private ProductCategoryRepository repository;
+//  查
+    @Test
+    public void findById(){
+        ProductCategory productCategory = repository.findById(2).orElse(null);
+        System.out.println(productCategory.toString());
+    }
+//    增
+//    为保证数据库干净 操作完就回滚【@Transactional完全回滚。不像事务里，失败才回滚】
+    @Test
+    @Transactional
+    public void saveOne() {
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setCategoryName("女生最爱");
+        productCategory.setCategoryType(2);
+        ProductCategory result = repository.save(productCategory);
+
+//      断言
+        if (result == null){
+            Assert.isTrue(false,"null才抛异常");
+        }
+
+
+    }
+//  更，共用save但是要指定主键
+
+    @Test
+    public void updateOne() {
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setCategoryId(2);
+        productCategory.setCategoryName("女生最爱");
+        productCategory.setCategoryType(2);
+        repository.save(productCategory);
+    }
+//    场景模拟-先查出后修改
+    @Test
+    public void findAndSave(){
+        ProductCategory productCategory = repository.findById(2).orElse(null);
+        productCategory.setCategoryType(2);
+        repository.save(productCategory);
+    }
+
+//    接口制定方法：类目编号数组查类目
+    @Test
+    public void findByCategoryTypeIn() {
+        List<Integer> list = Arrays.asList(1,2,4);
+        List<ProductCategory> result = repository.findByCategoryTypeIn(list);
+//      断言不为0则成功
+        Assert.notEmpty(result,"不为空数组");
+    }
+}
+```
 

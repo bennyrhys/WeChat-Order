@@ -13,3 +13,12 @@ logging:
 #  path: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/ # 弃用了
 #  file: /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/src/main/resources/sell.log # 弃用了
 
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.210.132/db_wxds?characterEncoding=utf-8&userSSL=false
+  jpa:
+    show-sql: true
