@@ -1377,6 +1377,33 @@ class CategorySericeImplTest {
 
 # 商品
 
+## 枚举商品状态
+
+```
+package com.bennyrhys.wechat_order.enums;
+
+import lombok.Getter;
+
+/**
+ * 商品状态
+ * @Author bennyrhys
+ * @Date 2020-06-27 17:00
+ */
+@Getter
+public enum ProductStatusEnum {
+    UP(0, "在架"),
+    DOWN (1, "下架");
+
+    private Integer code;
+    private String msg;
+
+    ProductStatusEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+}
+```
+
 ## Dao
 
 ProductInfo
@@ -1487,5 +1514,172 @@ class ProductInfoRepositoryTest {
         Assertions.assertNotEquals(0, productInfoList.size());
     }
 
+}
+```
+
+## Serice 分页
+
+ProductSerice
+
+```java
+package com.bennyrhys.wechat_order.service;
+
+import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+/**
+ * 商品
+ * @Author bennyrhys
+ * @Date 2020-06-27 16:49
+ */
+public interface ProductSerice {
+    ProductInfo findOne(String productId);
+
+    /**
+     * 查询在架的商品-c端
+     * @return
+     */
+    List<ProductInfo> findUpAll();
+
+    /**
+     * 查找全部商品
+     * @param pageable 分页 springframe domain的包
+     * @return
+     */
+    Page<ProductInfo> findAll(Pageable pageable);
+
+    ProductInfo save(ProductInfo productInfo);
+
+//    加库存 减库存
+
+}
+```
+
+ProductServiceImpl
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import com.bennyrhys.wechat_order.enums.ProductStatusEnum;
+import com.bennyrhys.wechat_order.repository.ProductInfoRepository;
+import com.bennyrhys.wechat_order.service.ProductSerice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 商品
+ * @Author bennyrhys
+ * @Date 2020-06-27 16:55
+ */
+@Service
+public class ProductServiceImpl implements ProductSerice {
+    @Autowired
+    ProductInfoRepository repository;
+
+    @Override
+    public ProductInfo findOne(String productId) {
+        return repository.findById(productId).orElse(null);
+    }
+
+    /**
+     * 查询在架的商品-c端
+     *
+     * @return
+     */
+    @Override
+    public List<ProductInfo> findUpAll() {
+        return repository.findByProductStatus(ProductStatusEnum.UP.getCode());
+    }
+
+    /**
+     * 查找全部商品
+     *
+     * @param pageable 分页 springframe domain的包
+     * @return
+     */
+    @Override
+    public Page<ProductInfo> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public ProductInfo save(ProductInfo productInfo) {
+        return repository.save(productInfo);
+    }
+}
+```
+
+测试
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import com.bennyrhys.wechat_order.enums.ProductStatusEnum;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * 商品
+ * @Author bennyrhys
+ * @Date 2020-06-27 17:05
+ */
+@SpringBootTest
+class ProductServiceImplTest {
+
+    @Autowired
+     private ProductServiceImpl productSerice;
+
+    @Test
+    void findOne() {
+        ProductInfo productInfo = productSerice.findOne("11");
+        Assertions.assertEquals("11", productInfo.getProductId());
+    }
+
+    @Test
+    void findUpAll() {
+        List<ProductInfo> productInfoList = productSerice.findUpAll();
+        Assertions.assertNotEquals(0, productInfoList.size());
+    }
+
+    @Test
+    void findAll() {
+//        配置PageAble对象
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<ProductInfo> productInfos = productSerice.findAll(pageRequest);
+//        System.out.println(productInfos.getTotalElements());
+        Assertions.assertNotEquals(0, productInfos.getTotalElements());
+    }
+
+    @Test
+    void save() {
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setProductId("22");
+        productInfo.setCategoryType(1);
+        productInfo.setProductName("皮蛋瘦肉粥");
+        productInfo.setProductDescription("超甜，很好喝");
+        productInfo.setProductIcon("http://xxxx.png");
+        productInfo.setProductPrice(new BigDecimal(5.9));
+        productInfo.setProductStock(100);
+        productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
+
+        ProductInfo result = productSerice.save(productInfo);
+        Assertions.assertNotNull(result);
+    }
 }
 ```
