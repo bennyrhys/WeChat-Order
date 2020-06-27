@@ -1001,6 +1001,12 @@ http://xxx.com/abc/order/161899085773669363
 
 # 1.x-2.x版本升级
 
+断言
+
+Assert -> Assertions
+
+
+
 jpa
 
 findOne->findById返回值Optional对象，
@@ -1051,7 +1057,9 @@ new pagerequest（）-> pagerequest（）.of
 
 URLEncode.encode
 
-# Dao与测试
+# 类目
+
+## Dao与Test
 
 增删改查
 
@@ -1237,6 +1245,132 @@ public class ProductCategoryRepositoryTest {
         List<ProductCategory> result = repository.findByCategoryTypeIn(list);
 //      断言不为0则成功
         Assert.notEmpty(result,"不为空数组");
+    }
+}
+```
+
+## Service与Test
+
+com.bennyrhys.wechat_order.service.CategoryService
+
+```java
+package com.bennyrhys.wechat_order.service;
+
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+
+import java.util.List;
+
+/**
+ * 类目
+ * @Author bennyrhys
+ * @Date 2020-06-26 16:12
+ */
+public interface CategoryService {
+    ProductCategory findOne(Integer categoryId);
+
+    List<ProductCategory> findAll();
+
+    List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList);
+
+    ProductCategory save(ProductCategory productCategory);
+
+}
+```
+
+CategorySericeImpl
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+import com.bennyrhys.wechat_order.repository.ProductCategoryRepository;
+import com.bennyrhys.wechat_order.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 类目
+ * @Author bennyrhys
+ * @Date 2020-06-26 16:16
+ */
+@Service
+public class CategorySericeImpl implements CategoryService {
+    @Autowired
+    ProductCategoryRepository repository;
+
+    @Override
+    public ProductCategory findOne(Integer categoryId) {
+        return repository.findById(categoryId).orElse(null);
+    }
+
+    @Override
+    public List<ProductCategory> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList) {
+        return repository.findByCategoryTypeIn(categoryTypeList);
+    }
+
+    @Override
+    public ProductCategory save(ProductCategory productCategory) {
+        return repository.save(productCategory);
+    }
+}
+```
+
+CategorySericeImplTest
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * @Author bennyrhys
+ * @Date 2020-06-27 08:46
+ */
+@SpringBootTest
+class CategorySericeImplTest {
+
+    @Autowired
+    CategorySericeImpl categorySerice;
+
+    @Test
+    void findOne() {
+        ProductCategory one = categorySerice.findOne(1);
+        Assertions.assertEquals(1, one.getCategoryId());
+    }
+
+    @Test
+    void findAll() {
+        List<ProductCategory> categoryList = categorySerice.findAll();
+        Assertions.assertNotEquals(0,categoryList.size());
+    }
+
+    @Test
+    void findByCategoryTypeIn() {
+        List<ProductCategory> byCategoryTypeIn = categorySerice.findByCategoryTypeIn(Arrays.asList(1, 2, 3, 4, 5, 6, 7));
+        Assertions.assertNotEquals(0, byCategoryTypeIn.size());
+    }
+
+    @Test
+    void save() {
+        ProductCategory category = new ProductCategory("男生专享", 3);
+        ProductCategory result = categorySerice.save(category);
+        Assertions.assertNotNull(result);
     }
 }
 ```
