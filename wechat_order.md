@@ -1683,3 +1683,255 @@ class ProductServiceImplTest {
     }
 }
 ```
+
+## API 封装jsonVO 封装状态
+
+商品列表
+
+com.bennyrhys.wechat_order.VO.ResultVO
+
+```java
+package com.bennyrhys.wechat_order.VO;
+
+import lombok.Data;
+
+/**
+ * http请求返回的最外层对象
+ * @Author bennyrhys
+ * @Date 2020-06-27 19:56
+ */
+@Data
+public class ResultVO<T> {
+//    错误码
+    private Integer code;
+//    提示
+    private String msg;
+//    具体内容
+    private T data;
+}
+```
+
+```java
+package com.bennyrhys.wechat_order.VO;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+import java.util.List;
+
+/**
+ * 商品类目
+ * @Author bennyrhys
+ * @Date 2020-06-27 20:22
+ */
+@Data
+public class ProductVO {
+    @JsonProperty("name")
+    private String productName;
+
+    @JsonProperty("type")
+    private Integer productType;
+
+    @JsonProperty("foods")
+    private List<ProductInfoVO> productInfoVOList;
+}
+```
+
+```java
+package com.bennyrhys.wechat_order.VO;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+/**
+ * 商品详情（删减脱敏 ）
+ * @Author bennyrhys
+ * @Date 2020-06-27 20:24
+ */
+@Data
+public class ProductInfoVO {
+    @JsonProperty("id")
+    private String productId;
+
+    @JsonProperty("name")
+    private String productName;
+
+    @JsonProperty("price")
+    private BigDecimal productPrice;
+
+    @JsonProperty("description")
+    private String productDescription;
+
+    @JsonProperty("icon")
+    private String productIcon;
+}
+```
+
+封装状态
+
+com.bennyrhys.wechat_order.utils.ResultVOUtils
+
+```java
+package com.bennyrhys.wechat_order.utils;
+
+import com.bennyrhys.wechat_order.VO.ResultVO;
+
+/**
+ * 通用返回消息
+ * @Author bennyrhys
+ * @Date 2020-06-27 21:24
+ */
+public class ResultVOUtils {
+    public static ResultVO success(Object object) {
+        ResultVO<Object> resultVO = new ResultVO<>();
+        resultVO.setData(object);
+        resultVO.setCode(0);
+        resultVO.setMsg("成功");
+        return resultVO;
+    }
+
+    public static ResultVO success() {
+        return success(null);
+    }
+
+    public static ResultVO error(Integer code, String msg) {
+        ResultVO<Object> resultVO = new ResultVO<>();
+        resultVO.setCode(code);
+        resultVO.setMsg(msg);
+        return resultVO;
+    }
+}
+```
+
+控制台
+
+```java
+package com.bennyrhys.wechat_order.controller;
+
+import com.bennyrhys.wechat_order.VO.ProductInfoVO;
+import com.bennyrhys.wechat_order.VO.ProductVO;
+import com.bennyrhys.wechat_order.VO.ResultVO;
+import com.bennyrhys.wechat_order.daoobject.ProductCategory;
+import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import com.bennyrhys.wechat_order.service.CategoryService;
+import com.bennyrhys.wechat_order.service.ProductSerice;
+import com.bennyrhys.wechat_order.utils.ResultVOUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 买家商品
+ * @Author bennyrhys
+ * @Date 2020-06-27 19:30
+ */
+@RestController
+@RequestMapping("/buyer/product")
+public class BuyerProductController {
+    
+    @Autowired 
+    private ProductSerice productSerice;
+
+    @Autowired
+    private CategoryService categoryService;
+    
+    @GetMapping("list")
+    public ResultVO list() {
+//        1. 查询所有上架商品
+        List<ProductInfo> productInfoList = productSerice.findUpAll();
+//        2. 查询类目（一次查清）
+//        List<Integer> categoryTypeList = new ArrayList<>();
+//        获取categoryType-传统方法
+//        for (ProductInfo productInfo : productInfoList) {
+//            categoryTypeList.add(productInfo.getCategoryType());
+//        }
+//        精简方法（java8 lambda）
+        List<Integer> categoryTypeList = productInfoList.stream()
+                .map(e -> e.getCategoryType())
+                .collect(Collectors.toList());
+        List<ProductCategory> productCategoryList = categoryService.findByCategoryTypeIn(categoryTypeList);
+//        3. 数据拼装
+        List<ProductVO> productVOList = new ArrayList<>();
+        for (ProductCategory productCategory : productCategoryList) {
+            ProductVO productVO = new ProductVO();
+            productVO.setProductType(productCategory.getCategoryType());
+            productVO.setProductName(productCategory.getCategoryName());
+
+            List<ProductInfoVO> productInfoVOList = new ArrayList<>();
+            for (ProductInfo productInfo : productInfoList) {
+                if (productInfo.getCategoryType().equals(productCategory.getCategoryType())){
+                    ProductInfoVO productInfoVO = new ProductInfoVO();
+//                    每个重新赋值太慢 对象拷贝
+                    BeanUtils.copyProperties(productInfo, productInfoVO);
+                    productInfoVOList.add(productInfoVO);
+                }
+            }
+            productVO.setProductInfoVOList(productInfoVOList);
+            productVOList.add(productVO);
+        }
+
+
+//        【直接返回】
+//        ResultVO<Object> resultVO = new ResultVO<>();
+//        resultVO.setData(productVOList);
+//        resultVO.setCode(0);
+//        resultVO.setMsg("成功");
+
+//        【测试 json 结构】
+//        ResultVO<Object> vo = new ResultVO<>();
+//        ProductVO productVO = new ProductVO();
+//        ProductInfoVO productInfoVO = new ProductInfoVO();
+//
+//        vo.setCode(0);
+//        vo.setMsg("成功");
+//
+//        productVO.setProductInfoVOList(Arrays.asList(productInfoVO));
+//        vo.setData(Arrays.asList(productVO));
+
+//      【封装返回数据】
+        return ResultVOUtils.success(productVOList);
+    }
+}
+```
+
+# 前端联调
+
+>虚拟机nginx和本地联调，数据渲染
+
+缺少cookie中携带的openid
+
+http://192.168.210.132/
+
+http://192.168.210.132/#/order 设置cookie document.cookie='openid=abc123'
+
+虚拟机设置nginx配置文件`vim /usr/local/nginx/conf/nginx.conf`
+
+1. 修改本机的100.68.53.177
+
+   ```xml
+    location /sell/ {
+               proxy_pass http://100.68.53.177:8080/sell/;
+           }
+   ```
+
+2. 修改域名`server_name sell.com;`
+
+   修改本机的host`sudo vim /etc/hosts`
+
+   ```
+   # 配置项目的访问
+   192.168.210.132 sell.com
+   ```
+
+3. 重启nginx`ngnix -s reload`
+
+
+

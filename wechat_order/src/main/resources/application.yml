@@ -22,3 +22,7 @@ spring:
     url: jdbc:mysql://192.168.210.132/db_wxds?characterEncoding=utf-8&userSSL=false
   jpa:
     show-sql: true
+# 配置项目前缀
+server:
+  servlet:
+    context-path: /sell
