@@ -1445,3 +1445,4 @@ Caused by: org.hibernate.HibernateException: Access to DialectResolutionInfo can
 	... 95 common frames omitted
 Table 'db_wxds.oder_detail' doesn't exist
 Column 'order_status' cannot be null
+【取消订单，订单状态不正确，orderId=1593317227294809400, orderStatus=0】

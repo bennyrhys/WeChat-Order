@@ -15,6 +15,7 @@ import com.bennyrhys.wechat_order.repository.OrderMasterRepository;
 import com.bennyrhys.wechat_order.service.OrderService;
 import com.bennyrhys.wechat_order.service.ProductSerice;
 import com.bennyrhys.wechat_order.utils.KeyUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * @Date 2020-06-28 09:45
  */
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -152,8 +154,38 @@ public class OrderServiceImpl implements OrderService {
      * @param orderDTO
      */
     @Override
+    @Transactional
     public OrderDTO cancel(OrderDTO orderDTO) {
-        return null;
+//        状态转换
+        OrderMaster orderMaster = new OrderMaster();
+
+//        判断订单状态
+        if (!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())) {
+            log.error("【取消订单，订单状态不正确，orderId={}, orderStatus={}】",orderDTO.getOrderId(), orderDTO.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+//        修改订单状态
+        orderDTO.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        BeanUtils.copyProperties(orderDTO, orderMaster); // 注意状态修改时机
+        OrderMaster updateResult = orderMasterRepository.save(orderMaster);
+        if (updateResult == null) {
+            log.info("【取消订单，更新失败 orderMaster={}】",orderMaster);
+            throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
+        }
+//        返还库存
+        if (CollectionUtils.isEmpty(orderDTO.getOrderDetailList())) {
+            log.error("【取消订单，订单详情为空，orderDTO={}】",orderDTO);
+            throw new SellException(ResultEnum.ORDER_UPDATE_EMPTY);
+        }
+        List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream()
+                .map(e -> new CartDTO(e.getProductId(), e.getProductQuantity()))
+                .collect(Collectors.toList());
+        productSerice.increaseStock(cartDTOList);
+//        如果已支付需要退款
+        if(orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())) {
+            // TODO
+        }
+        return orderDTO;
     }
 
     /**

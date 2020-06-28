@@ -59,4 +59,5 @@ class ProductServiceImplTest {
         ProductInfo result = productSerice.save(productInfo);
         Assertions.assertNotNull(result);
     }
+
 }

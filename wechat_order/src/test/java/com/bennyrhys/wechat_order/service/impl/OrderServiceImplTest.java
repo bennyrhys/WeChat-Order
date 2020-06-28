@@ -2,6 +2,7 @@ package com.bennyrhys.wechat_order.service.impl;
 
 import com.bennyrhys.wechat_order.daoobject.OrderDetail;
 import com.bennyrhys.wechat_order.dto.OrderDTO;
+import com.bennyrhys.wechat_order.enums.OrderStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,10 @@ class OrderServiceImplTest {
 
     @Test
     void cancel() {
+        OrderDTO orderDTO = orderService.findOne(ORDER_ID);
+        OrderDTO result = orderService.cancel(orderDTO);
+
+        Assertions.assertEquals(OrderStatusEnum.CANCEL.getCode(), result.getOrderStatus());
     }
 
     @Test
