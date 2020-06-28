@@ -1937,6 +1937,64 @@ http://192.168.210.132/#/order 设置cookie document.cookie='openid=abc123'
 
 # 订单&订单详情
 
+## 状态枚举
+
+PayStatusEnum
+
+```java
+package com.bennyrhys.wechat_order.enums;
+
+import lombok.Getter;
+
+/**
+ * 支付状态
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:00
+ */
+@Getter
+public enum PayStatusEnum {
+    WAIT(0, "待支付"),
+    SUCCESS(1, "支付成功")
+    ;
+
+    private Integer code;
+    private String msg;
+
+    PayStatusEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+}
+```
+
+OrderStatusEnum
+
+```java
+package com.bennyrhys.wechat_order.enums;
+
+import lombok.Getter;
+
+/**
+ * 订单状态
+ * @Author bennyrhys
+ * @Date 2020-06-28 07:53
+ */
+@Getter
+public enum OrderStatusEnum {
+    NEW(0, "新订单"),
+    FINISHED(1, "完结"),
+    CANCEL(2, "取消"),
+    ;
+    private Integer code;
+    private String msg;
+
+    OrderStatusEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+}
+```
+
 ## Dao
 
 OrderMaster
@@ -2186,5 +2244,422 @@ class OrderDetailRepositoryTest {
         Assertions.assertNotEquals(0, detailList.size());
     }
 }
+```
+
+## DTO 
+
+为逻辑处理，抽象出来的传输对象。（保证不修改，已有的数据库字段上）
+
+法1：注解，在原有字段进行改动
+
+法2：dto新创建文件，方便维护
+
+
+
+OrderMaster注解方式修改【不建议】
+
+```java
+//    【新增】一对多关系，订单详情列表。防止映射为空加 @Transient 过滤掉
+//    @Transient
+//    private List<OrderDetail> orderDetailList;
+```
+
+com.bennyrhys.wechat_order.dto.OrderDTO 新建dto文件单独生成字段【建议】
+
+```java
+package com.bennyrhys.wechat_order.dto;
+
+import com.bennyrhys.wechat_order.daoobject.OrderDetail;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 订单
+ * 逻辑处理，数据传输的定制化字段
+ *
+ * 注意：@Id不用写了，增加的字段不用注解特殊忽略
+ * @Author bennyrhys
+ * @Date 2020-06-28 09:27
+ */
+@Data
+public class OrderDTO {
+    //    订单id
+    private String orderId;
+    //    买家名字
+    private String buyerName;
+    //    买家电话
+    private String buyerPhone;
+    //    买家地址
+    private String buyerAddress;
+    //    买家微信openid
+    private String buyerOpenid;
+    //    订单总金额
+    private BigDecimal orderAmount;
+    //    订单状态,默认0新下单
+    private Integer orderStatus;
+    //    支付状态,默认0未支付
+    private Integer payStatus;
+    //    创建时间 【考虑到时间排序】
+    private Date createTime;
+    //    更新时间
+    private Date updateTime;
+
+//    【新增】一对多关系，订单详情列表。防止映射为空加 @Transient 过滤掉
+    private List<OrderDetail> orderDetailList;
+}
+```
+
+方便计算减库存的购物车信息
+
+CartDTO
+
+```java
+package com.bennyrhys.wechat_order.dto;
+
+import lombok.Data;
+
+/**
+ * 购物车
+ * @Author bennyrhys
+ * @Date 2020-06-28 11:00
+ */
+@Data
+public class CartDTO {
+    private String productId;
+    private Integer productQuantity;
+
+    public CartDTO(String productId, Integer productQuantity) {
+        this.productId = productId;
+        this.productQuantity = productQuantity;
+    }
+}
+```
+
+## 封装抛异常
+
+com.bennyrhys.wechat_order.exception.SellException
+
+```java
+package com.bennyrhys.wechat_order.exception;
+
+import com.bennyrhys.wechat_order.enums.ResultEnum;
+
+/**
+ * 抛异常
+ * @Author bennyrhys
+ * @Date 2020-06-28 10:11
+ */
+public class SellException extends RuntimeException {
+    private Integer code;
+
+
+    public SellException(ResultEnum resultEnum) {
+        super(resultEnum.getMsg());
+        this.code = resultEnum.getCode();
+    }
+}
+```
+
+```java
+package com.bennyrhys.wechat_order.enums;
+
+import lombok.Getter;
+
+/**
+ * 返回给前端提示的异常消息
+ * @Author bennyrhys
+ * @Date 2020-06-28 10:12
+ */
+@Getter
+public enum ResultEnum {
+    PRODUCT_NOT_EXIST(10, "商品不存在"),
+    PRODUCT_STOCK_ERROR(11,"库存不正确")
+    ;
+
+    private Integer code;
+    private String msg;
+
+    ResultEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+}
+```
+
+## 随机key
+
+```java
+package com.bennyrhys.wechat_order.utils;
+
+import java.util.Random;
+
+/**
+ * 随机数生成
+ * 用于无法自增的主键 key
+ * @Author bennyrhys
+ * @Date 2020-06-28 10:33
+ */
+public class KeyUtil {
+    /**
+     * 生成唯一主键
+     * 格式：时间+随机数
+     * 防止多线程
+     */
+
+    public static synchronized String genUniqueKey() {
+//        六位定长
+        Integer number = new Random().nextInt(900000)+100000;
+        return System.currentTimeMillis() + String.valueOf(number);
+    }
+}
+```
+
+## Service
+
+创建订单
+
+OrderService
+
+```java
+package com.bennyrhys.wechat_order.service;
+
+import com.bennyrhys.wechat_order.dto.OrderDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+/**
+ * 订单
+ * @Author bennyrhys
+ * @Date 2020-06-28 09:23
+ */
+public interface OrderService {
+    /** 创建订单
+     * 为订单-订单详情，一对多关系抽象出dto */
+    OrderDTO create(OrderDTO orderDTO);
+
+    /** 查询单个订单 */
+    OrderDTO findOne(String orderId);
+
+    /** 查询订单列表
+     * 注意：包名springframe */
+    Page<OrderDTO> findList(String buyerOpenId, Pageable pageable);
+
+    /** 取消订单 */
+    OrderDTO cancel(OrderDTO orderDTO);
+
+    /** 完结订单 */
+    OrderDTO finish(OrderDTO orderDTO);
+
+    /** 支付订单 */
+    OrderDTO paid(OrderDTO orderDTO);
+
+}
+```
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.daoobject.OrderDetail;
+import com.bennyrhys.wechat_order.daoobject.OrderMaster;
+import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import com.bennyrhys.wechat_order.dto.CartDTO;
+import com.bennyrhys.wechat_order.dto.OrderDTO;
+import com.bennyrhys.wechat_order.enums.OrderStatusEnum;
+import com.bennyrhys.wechat_order.enums.PayStatusEnum;
+import com.bennyrhys.wechat_order.enums.ResultEnum;
+import com.bennyrhys.wechat_order.exception.SellException;
+import com.bennyrhys.wechat_order.repository.OrderDetailRepository;
+import com.bennyrhys.wechat_order.repository.OrderMasterRepository;
+import com.bennyrhys.wechat_order.service.OrderService;
+import com.bennyrhys.wechat_order.service.ProductSerice;
+import com.bennyrhys.wechat_order.utils.KeyUtil;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 订单
+ * @Author bennyrhys
+ * @Date 2020-06-28 09:45
+ */
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private ProductSerice productSerice;
+
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
+    @Autowired
+    private OrderMasterRepository orderMasterRepository;
+
+    /**
+     * 创建订单
+     * 为订单-订单详情，一对多关系抽象出dto
+     *
+     * @param orderDTO
+     */
+    @Override
+    @Transactional
+    public OrderDTO create(OrderDTO orderDTO) {
+        BigDecimal orderAmount = new BigDecimal(BigInteger.ZERO);
+        String orderId = KeyUtil.genUniqueKey();
+
+//        List<CartDTO> cartDTOList = new ArrayList<>();
+
+//        1. 查询商品（数量、金额）
+        for (OrderDetail orderDetail : orderDTO.getOrderDetailList()) {
+            ProductInfo productInfo = productSerice.findOne(orderDetail.getProductId());
+            if (productInfo == null) {
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            //        2. 计算订单总价 【注意productInfo才有价格】
+            orderAmount =  productInfo.getProductPrice()
+                    .multiply(new BigDecimal(orderDetail.getProductQuantity()))
+                    .add(orderAmount);
+            //      订单详情入库【注意：前端不会传来全部所需字段。随机数id】
+            //      对象拷贝 spring提供的简便方法Info->Detail
+            BeanUtils.copyProperties(productInfo, orderDetail);
+            orderDetail.setDetailId(KeyUtil.genUniqueKey());
+            orderDetail.setOrderId(orderId);
+            orderDetailRepository.save(orderDetail);
+
+//            CartDTO cartDTO = new CartDTO(orderDetail.getProductId(), orderDetail.getProductQuantity());
+//            cartDTOList.add(cartDTO);
+        }
+//        3. 写入订单数据库（orderMaster、orderDetail）
+        OrderMaster orderMaster = new OrderMaster();
+        //       拷贝对象 【注意：属性为null也会被拷贝，调整顺序先拷贝】
+        BeanUtils.copyProperties(orderDTO, orderMaster);
+        orderMaster.setOrderId(orderId);
+        orderMaster.setOrderAmount(orderAmount);
+        //      增加因拷贝被覆盖的默认状态值
+        orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
+        orderMaster.setPayStatus(PayStatusEnum.WAIT.getCode());
+        orderMasterRepository.save(orderMaster);
+
+
+//        4. 扣库存 【库存一次修改，所以要获取购物车list 法1：上for cartDTO直接list.add 法2：lamdba】
+//        并发下 redis锁机制防止超卖
+        List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream().map(e ->
+                new CartDTO(e.getProductId(), e.getProductQuantity()))
+                .collect(Collectors.toList());
+        productSerice.decreaseStock(cartDTOList);
+
+        return orderDTO;
+    }
+
+    /**
+     * 查询单个订单
+     *
+     * @param orderId
+     */
+    @Override
+    public OrderDTO findOne(String orderId) {
+        return null;
+    }
+
+    /**
+     * 查询订单列表
+     * 注意：包名springframe
+     *
+     * @param buyerOpenId
+     * @param pageable
+     */
+    @Override
+    public Page<OrderDTO> findList(String buyerOpenId, Pageable pageable) {
+        return null;
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param orderDTO
+     */
+    @Override
+    public OrderDTO cancel(OrderDTO orderDTO) {
+        return null;
+    }
+
+    /**
+     * 完结订单
+     *
+     * @param orderDTO
+     */
+    @Override
+    public OrderDTO finish(OrderDTO orderDTO) {
+        return null;
+    }
+
+    /**
+     * 支付订单
+     *
+     * @param orderDTO
+     */
+    @Override
+    public OrderDTO paid(OrderDTO orderDTO) {
+        return null;
+    }
+}
+```
+
+
+
+## 测试
+
+```java
+/**
+ * 订单
+ * @Author bennyrhys
+ * @Date 2020-06-28 11:26
+ */
+@SpringBootTest
+@Slf4j
+class OrderServiceImplTest {
+
+    @Autowired
+    private OrderServiceImpl orderService;
+
+    private final String BUYER_OPENID = "110110";
+
+    @Test
+    void create() {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setBuyerName("瑞新");
+        orderDTO.setBuyerAddress("吉林通化");
+        orderDTO.setBuyerPhone("123456789123");
+        orderDTO.setBuyerOpenid(BUYER_OPENID);
+
+//        购物车
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        OrderDetail od = new OrderDetail();
+        od.setProductId("11");
+        od.setProductQuantity(1);
+        orderDetailList.add(od);
+
+        OrderDetail od2 = new OrderDetail();
+        od2.setProductId("22");
+        od2.setProductQuantity(2);
+        orderDetailList.add(od2);
+
+        orderDTO.setOrderDetailList(orderDetailList);
+
+        OrderDTO result = orderService.create(orderDTO);
+        
+//        log.info("【创建订单】result={}", result);
+        Assertions.assertNotNull(result);
+    }
 ```
 

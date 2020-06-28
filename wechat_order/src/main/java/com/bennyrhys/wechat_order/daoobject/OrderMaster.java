@@ -42,4 +42,7 @@ public class OrderMaster {
 //    更新时间
     private Date updateTime;
 
+//    【新增】一对多关系，订单详情列表。防止映射为空加 @Transient 过滤掉
+//    @Transient
+//    private List<OrderDetail> orderDetailList;
 }

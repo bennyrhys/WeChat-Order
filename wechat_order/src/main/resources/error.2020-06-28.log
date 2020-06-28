@@ -1444,3 +1444,4 @@ Caused by: org.hibernate.HibernateException: Access to DialectResolutionInfo can
 	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263)
 	... 95 common frames omitted
 Table 'db_wxds.oder_detail' doesn't exist
+Column 'order_status' cannot be null

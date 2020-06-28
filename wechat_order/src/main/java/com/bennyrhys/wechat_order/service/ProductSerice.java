@@ -1,6 +1,7 @@
 package com.bennyrhys.wechat_order.service;
 
 import com.bennyrhys.wechat_order.daoobject.ProductInfo;
+import com.bennyrhys.wechat_order.dto.CartDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,6 +30,17 @@ public interface ProductSerice {
 
     ProductInfo save(ProductInfo productInfo);
 
-//    加库存 减库存
+    /**
+     * 加库存 【传入抽象的 购物车 信息】
+     * @param cartDTOList
+     */
+    void increaseStock(List<CartDTO> cartDTOList);
+
+    /**
+     * 减库存
+     */
+    void decreaseStock(List<CartDTO> cartDTOList);
+
+
 
 }

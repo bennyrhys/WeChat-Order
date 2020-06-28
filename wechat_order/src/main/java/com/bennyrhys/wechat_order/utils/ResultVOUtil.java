@@ -7,7 +7,7 @@ import com.bennyrhys.wechat_order.VO.ResultVO;
  * @Author bennyrhys
  * @Date 2020-06-27 21:24
  */
-public class ResultVOUtils {
+public class ResultVOUtil {
     public static ResultVO success(Object object) {
         ResultVO<Object> resultVO = new ResultVO<>();
         resultVO.setData(object);

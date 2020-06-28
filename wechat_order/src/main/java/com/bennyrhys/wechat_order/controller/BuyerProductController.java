@@ -7,7 +7,7 @@ import com.bennyrhys.wechat_order.daoobject.ProductCategory;
 import com.bennyrhys.wechat_order.daoobject.ProductInfo;
 import com.bennyrhys.wechat_order.service.CategoryService;
 import com.bennyrhys.wechat_order.service.ProductSerice;
-import com.bennyrhys.wechat_order.utils.ResultVOUtils;
+import com.bennyrhys.wechat_order.utils.ResultVOUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,6 +87,6 @@ public class BuyerProductController {
 //        vo.setData(Arrays.asList(productVO));
 
 //      【封装返回数据】
-        return ResultVOUtils.success(productVOList);
+        return ResultVOUtil.success(productVOList);
     }
 }
