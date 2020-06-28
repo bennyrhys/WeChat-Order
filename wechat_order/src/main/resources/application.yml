@@ -19,7 +19,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://192.168.210.132/db_wxds?characterEncoding=utf-8&userSSL=false
+    url: jdbc:mysql://192.168.210.134/db_wxds?characterEncoding=utf-8&userSSL=false
   jpa:
     show-sql: true
 # 配置项目前缀

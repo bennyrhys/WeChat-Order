@@ -219,7 +219,7 @@ create table `order_detail`(
 	`product_name` varchar(64) not null comment '商品名称',
 	`product_price` decimal(8,2) not null comment '商品价格',
 	`product_quantity` int not null comment '商品数量',
-	`product_icon` varchar(512) not null comment '商品小图',
+	` ` varchar(512) not null comment '商品小图',
 	`create_time` timestamp not null default current_timestamp comment '创建时间',
 	`update_time` timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
 	primary key (`detail_id`),
@@ -1902,7 +1902,7 @@ public class BuyerProductController {
 }
 ```
 
-# 前端联调
+## 前端联调
 
 >虚拟机nginx和本地联调，数据渲染
 
@@ -1934,4 +1934,257 @@ http://192.168.210.132/#/order 设置cookie document.cookie='openid=abc123'
 3. 重启nginx`ngnix -s reload`
 
 
+
+# 订单&订单详情
+
+## Dao
+
+OrderMaster
+
+```java
+package com.bennyrhys.wechat_order.daoobject;
+
+import com.bennyrhys.wechat_order.enums.OrderStatusEnum;
+import com.bennyrhys.wechat_order.enums.PayStatusEnum;
+import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 订单表
+ * @Author bennyrhys
+ * @Date 2020-06-28 07:49
+ */
+@Entity
+@Data
+//    时间自动更新
+@DynamicUpdate
+public class OrderMaster {
+//    订单id
+    @Id
+    private String orderId;
+//    买家名字
+    private String buyerName;
+//    买家电话
+    private String buyerPhone;
+//    买家地址
+    private String buyerAddress;
+//    买家微信openid
+    private String buyerOpenid;
+//    订单总金额
+    private BigDecimal orderAmount;
+//    订单状态,默认0新下单
+    private Integer orderStatus = OrderStatusEnum.NEW.getCode();
+//    支付状态,默认0未支付
+    private Integer payStatus = PayStatusEnum.WAIT.getCode();
+//    创建时间 【考虑到时间排序】
+    private Date createTime;
+//    更新时间
+    private Date updateTime;
+
+}
+```
+
+OrderDetail
+
+```java
+package com.bennyrhys.wechat_order.daoobject;
+
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.math.BigDecimal;
+
+/**
+ * 订单详情
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:09
+ */
+@Entity
+@Data
+public class OrderDetail {
+//    订单详情id
+    @Id
+    private String detailId;
+//    订单id
+    private String orderId;
+//    商品id
+    private String productId;
+//    商品名称
+    private String productName;
+//    商品价格
+    private BigDecimal productPrice;
+//    商品数量
+    private Integer productQuantity;
+//    商品小图
+    private String productIcon;
+}
+```
+
+OrderMasterRepository
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.OrderMaster;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * 订单
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:16
+ */
+public interface OrderMasterRepository extends JpaRepository<OrderMaster, String> {
+
+    /**
+     * 分页查询一个用户的全部订单
+     * @param buyerOpenid
+     * @param pageable
+     * @return
+     */
+    Page<OrderMaster> findByBuyerOpenid(String buyerOpenid, Pageable pageable);
+}
+```
+
+OrderDetailRepository
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.OrderDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+/**
+ * 订单详情
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:20
+ */
+public interface OrderDetailRepository extends JpaRepository<OrderDetail, String> {
+    /**
+     * 根据订单id查询订单详情
+     * 一对多
+     * @param orderId
+     * @return
+     */
+    List<OrderDetail> findByOrderId(String orderId);
+}
+```
+
+OrderMasterRepositoryTest
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.OrderMaster;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:27
+ */
+@SpringBootTest
+class OrderMasterRepositoryTest {
+    @Autowired
+    OrderMasterRepository repository;
+
+    private final String OPENID = "110110";
+
+    @Test
+    public void saveTest() {
+        OrderMaster orderMaster = new OrderMaster();
+        orderMaster.setOrderId("12");
+        orderMaster.setBuyerName("瑞新");
+        orderMaster.setBuyerAddress("吉林通化");
+        orderMaster.setBuyerOpenid(OPENID);
+        orderMaster.setBuyerPhone("123456789123");
+        orderMaster.setOrderAmount(new BigDecimal(8.8));
+
+        OrderMaster result = repository.save(orderMaster);
+
+        Assertions.assertNotNull(result);
+    }
+
+    /**
+     * 分页查询一个用户的全部订单
+     */
+    @Test
+    public void findByBuyerOpenid() {
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<OrderMaster> byBuyerOpenid = repository.findByBuyerOpenid(OPENID, pageRequest);
+//        System.out.println(byBuyerOpenid.getTotalElements());
+
+        Assertions.assertNotEquals(0, byBuyerOpenid.getTotalElements());
+    }
+}
+```
+
+OrderDetailRepositoryTest
+
+```java
+package com.bennyrhys.wechat_order.repository;
+
+import com.bennyrhys.wechat_order.daoobject.OrderDetail;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * 订单详情
+ * @Author bennyrhys
+ * @Date 2020-06-28 08:56
+ */
+@SpringBootTest
+class OrderDetailRepositoryTest {
+    @Autowired
+    OrderDetailRepository repository;
+
+    @Test
+    public void saveTest() {
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setDetailId("2");
+        orderDetail.setOrderId("11");
+        orderDetail.setProductIcon("http://xxx.png");
+        orderDetail.setProductId("11");
+        orderDetail.setProductName("雪梨");
+        orderDetail.setProductPrice(new BigDecimal(9.5));
+        orderDetail.setProductQuantity(2);
+
+        OrderDetail result = repository.save(orderDetail);
+
+        Assertions.assertNotNull(result);
+    }
+
+    /**
+     * 根据订单id查订单详情
+     * 一对多
+     */
+    @Test
+    public void findByOrderId() {
+        List<OrderDetail> detailList = repository.findByOrderId("11");
+        Assertions.assertNotEquals(0, detailList.size());
+    }
+}
+```
 
