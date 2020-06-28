@@ -19,6 +19,11 @@
     </properties>
 
     <dependencies>
+<!--        json转换工具-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
 <!--        添加小工具 日志方便，get、set方便【idea中下载插件lombok 】-->
         <dependency>
             <groupId>org.projectlombok</groupId>

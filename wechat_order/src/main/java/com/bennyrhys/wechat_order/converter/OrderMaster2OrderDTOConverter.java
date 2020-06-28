@@ -1,4 +1,4 @@
-package com.bennyrhys.wechat_order;
+package com.bennyrhys.wechat_order.converter;
 
 import com.bennyrhys.wechat_order.daoobject.OrderMaster;
 import com.bennyrhys.wechat_order.dto.OrderDTO;

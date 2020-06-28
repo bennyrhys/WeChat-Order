@@ -1,6 +1,6 @@
 package com.bennyrhys.wechat_order.service.impl;
 
-import com.bennyrhys.wechat_order.OrderMaster2OrderDTOConverter;
+import com.bennyrhys.wechat_order.converter.OrderMaster2OrderDTOConverter;
 import com.bennyrhys.wechat_order.daoobject.OrderDetail;
 import com.bennyrhys.wechat_order.daoobject.OrderMaster;
 import com.bennyrhys.wechat_order.daoobject.ProductInfo;
@@ -85,8 +85,8 @@ public class OrderServiceImpl implements OrderService {
 //        3. 写入订单数据库（orderMaster、orderDetail）
         OrderMaster orderMaster = new OrderMaster();
         //       拷贝对象 【注意：属性为null也会被拷贝，调整顺序先拷贝】
+        orderDTO.setOrderId(orderId); // 先设id
         BeanUtils.copyProperties(orderDTO, orderMaster);
-        orderMaster.setOrderId(orderId);
         orderMaster.setOrderAmount(orderAmount);
         //      增加因拷贝被覆盖的默认状态值
         orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
