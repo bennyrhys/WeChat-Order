@@ -742,7 +742,6 @@ orderId: 161899085773669363
 
 ```
 重定向到 /sell/wechat/authorize
-
 ```
 
 参数
@@ -999,7 +998,7 @@ returnUrl: http://xxx.com/abc/order/161899085773669363
 http://xxx.com/abc/order/161899085773669363
 ```
 
-# 1.x-2.x版本升级
+# 1.x-2.x版本差异
 
 断言
 
@@ -3267,4 +3266,98 @@ public class BuyerOrderController {
     }
 }
 ```
+
+# 内网穿透
+
+使用natapp映射本地环境
+
+# 微信
+
+## 网页授权
+
+### 参考文档
+
+官方文档
+https://mp.weixin.qq.com/wiki
+
+调试
+https://natapp.cn
+
+第三方SDK .
+https://github.com/Wechat-Group/weixin-java-tools
+
+支付（需要企业资质）
+
+https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_1
+
+网页授权
+
+https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
+
+### 获取openid之路
+
+
+
+### 公众账户设置域名
+
+授权回调本地环境（内网穿透-ssl+https）
+
+填写域名。公众号设置-功能设置-设置JS接口安全域名后，公众号开发者可在该域名下调用微信开放的JS接口。
+
+下载认证文件，拷贝到本地静态资源目录（注意/sell前缀先撤掉，直接访问验证）,验证通过后侧回信息
+
+### 获取code
+
+个体用户没有获取个人信息权限，公众号后台测试号可以啊。再配置一遍js和个人信息的域名安全检测
+
+注意：code仅能使用一次，5分钟后失效
+
+```
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http://bennyrhys.mynatapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_base&state=STATE#wechat_redirec
+```
+
+### 换access_token
+
+snsapi_base 和 snsapi_userinfo两种获取信息
+
+动态获取code拼接 
+
+```
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http://bennyrhys.mynatapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirec
+```
+
+### 第三方
+
+```
+微信小程序：weixin-java-miniapp
+微信支付：weixin-java-pay
+微信开放平台：weixin-java-open
+公众号（包括订阅号和服务号）：weixin-java-mp
+企业号/企业微信：weixin-java-cp
+
+<dependency>
+  <groupId>com.github.binarywang</groupId>
+  <artifactId>（不同模块参考下文）</artifactId>
+  <version>3.8.0</version>
+</dependency>
+```
+
+weixin-java-mp，OAuth2网页授权，
+
+## 支付
+
+
+
+1. 授权和支付分开调试，授权用微信官方测试账号，支付用借我的账号，写死openid调试
+2. 微信授权 https://www.imooc.com/article/70497
+3. 微信支付 https://www.imooc.com/article/31607
+4. 扫码登录调试文档 见doc目录下的open.md
+
+## 退款
+
+
+
+# 扩展
+
+1. 后台图片上传使用又拍云，[又拍云免费体验](https://console.upyun.com/register/?invite=HyTufSjS-)
 

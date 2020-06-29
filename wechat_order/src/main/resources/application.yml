@@ -24,9 +24,11 @@ spring:
     show-sql: true
   jackson:
     default-property-inclusion: non_null
-# 配置json为nll的字段 不显示
+
+    # 配置json为nll的字段 不显示
 
 # 配置项目前缀
 server:
   servlet:
     context-path: /sell
+
