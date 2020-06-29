@@ -250,3 +250,7 @@ Started WechatOrderApplication in 28.942 seconds (JVM running for 35.048)
 Initializing Spring DispatcherServlet 'dispatcherServlet'
 Initializing Servlet 'dispatcherServlet'
 Completed initialization in 43 ms
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
