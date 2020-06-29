@@ -6,6 +6,7 @@ import com.bennyrhys.wechat_order.dto.OrderDTO;
 import com.bennyrhys.wechat_order.enums.ResultEnum;
 import com.bennyrhys.wechat_order.exception.SellException;
 import com.bennyrhys.wechat_order.form.OrderForm;
+import com.bennyrhys.wechat_order.service.BuyerService;
 import com.bennyrhys.wechat_order.service.OrderService;
 import com.bennyrhys.wechat_order.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class BuyerOrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private BuyerService buyerService;
 
     /**
      * 创建订单
@@ -90,8 +93,8 @@ public class BuyerOrderController {
     public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
                                      @RequestParam("orderId") String orderId) {
         // 直接访问资源，越权访问
-        // TODO 不安全的做法，改进
-        OrderDTO orderDTO = orderService.findOne(orderId);
+        // TODO 不安全的做法，已改进
+        OrderDTO orderDTO = buyerService.findOrderOne(openid, orderId);
         return ResultVOUtil.success(orderDTO);
     }
     /**
@@ -100,10 +103,8 @@ public class BuyerOrderController {
     @PostMapping("/cancel")
     public ResultVO cancel(@RequestParam("openid") String openid,
                            @RequestParam("orderId") String orderId) {
-        // TODO 不安全的做法，改进
-
-        OrderDTO orderDTO = orderService.findOne(orderId);
-        orderService.cancel(orderDTO);
+        // TODO 不安全的做法，已改进
+        buyerService.cancelOrder(openid, orderId);
         return ResultVOUtil.success();
     }
 }
