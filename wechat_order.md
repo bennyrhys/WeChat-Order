@@ -2958,3 +2958,112 @@ class OrderServiceImplTest {
 }
 ```
 
+## API
+
+### 修改时间：毫秒到秒
+
+Date2LongSerializer时间转换
+
+```java
+package com.bennyrhys.wechat_order.utils.serializer;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+import java.io.IOException;
+import java.util.Date;
+
+/**
+ * 处理时间 毫秒变秒
+ * @Author bennyrhys
+ * @Date 2020-06-28 18:28
+ */
+public class Date2LongSerializer extends JsonSerializer<Date> {
+
+
+    @Override
+    public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeNumber(date.getTime() / 1000);
+    }
+}
+```
+
+OrderDTO字段类型指定类进行计算
+
+```java
+//    创建时间 【考虑到时间排序】 @JsonSerialize 毫秒变秒
+@JsonSerialize(using = Date2LongSerializer.class)
+private Date createTime;
+//    更新时间
+@JsonSerialize(using = Date2LongSerializer.class)
+private Date updateTime;
+```
+
+### 修改返回类型
+
+
+
+>法1：null则不显示
+>
+>法2：在返回值OrderDTO中赋初值
+
+**null则不显示**
+
+OrderDTO
+
+```java
+// 保障不给前端返回为null的字段 【一个个配太傻，配置文件统一配】
+//@JsonInclude(JsonInclude.Include.NON_NULL)
+public class OrderDTO {
+```
+
+配置文件控制全局
+
+```yml
+# 配置json为nll的字段 不显示
+   jackson:
+    default-property-inclusion: non_null
+```
+
+
+
+**空列表=[]**
+
+```java
+//    【新增】一对多关系，订单详情列表。防止映射为空加 @Transient 过滤掉
+    private List<OrderDetail> orderDetailList = new ArrayList<>();
+```
+
+"orderDetailList": []
+
+
+
+**空字符串=“”**
+
+BuyerOrderController
+
+```java
+//        return ResultVOUtil.success(orderDTOPage.getContent());
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        return resultVO;
+```
+
+ResultVO
+
+```java
+//    提示
+    private String msg="";
+```
+
+{
+
+​    "code": 0,
+
+​    "msg": "",
+
+​    "data": null
+
+}
+

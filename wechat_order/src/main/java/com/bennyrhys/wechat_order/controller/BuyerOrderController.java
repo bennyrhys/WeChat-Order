@@ -10,14 +10,16 @@ import com.bennyrhys.wechat_order.service.OrderService;
 import com.bennyrhys.wechat_order.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +35,12 @@ public class BuyerOrderController {
     @Autowired
     private OrderService orderService;
 
-//    创建订单
+    /**
+     * 创建订单
+     * @param orderForm
+     * @param bindingResult
+     * @return
+     */
     @PostMapping("create")
     public ResultVO<Map<String, String>> create(@Valid OrderForm orderForm,
                                                 BindingResult bindingResult) {
@@ -58,7 +65,34 @@ public class BuyerOrderController {
         return ResultVOUtil.success(map);
 
     }
-//    订单列表
-//    订单详情
+    /**
+     * 订单列表
+     * http://localhost:8080/sell/buyer/order/list?openid= ew3euwhd7sjw9diwkq&page=&size=
+     */
+    @GetMapping("/list")
+    public ResultVO<List<OrderDTO>> list(@RequestParam("openid") String openid,
+                                         @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        if (StringUtils.isEmpty(openid)) {
+            log.error("【查询订单列表】订单列表为空");
+            throw new SellException(ResultEnum.PARAM_ERROR);
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<OrderDTO> orderDTOPage = orderService.findList(openid, pageRequest);
+
+        return ResultVOUtil.success(orderDTOPage.getContent());
+    }
+
+    /**
+     * 订单详情
+     */
+    @GetMapping("/detail")
+    public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
+                                     @RequestParam("orderId") String orderId) {
+        // 直接访问资源，越权访问
+        // TODO 不安全的做法，改进
+        OrderDTO orderDTO = orderService.findOne(orderId);
+        return ResultVOUtil.success(orderDTO);
+    }
 //    取消订单
 }

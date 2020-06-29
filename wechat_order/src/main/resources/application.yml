@@ -22,6 +22,10 @@ spring:
     url: jdbc:mysql://192.168.210.134/db_wxds?characterEncoding=utf-8&userSSL=false
   jpa:
     show-sql: true
+  jackson:
+    default-property-inclusion: non_null
+# 配置json为nll的字段 不显示
+
 # 配置项目前缀
 server:
   servlet:
