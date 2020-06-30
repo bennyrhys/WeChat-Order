@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * 公众号手动获取openid
  * @Author bennyrhys
  * @Date 2020-06-29 16:27
  */

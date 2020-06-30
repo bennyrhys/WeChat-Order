@@ -1,6 +1,10 @@
 [TOC]
 
-作者：bennyrhys@163.com
+作者：bennyrhys@163.com （瑞新）
+
+# Mac下Idea快捷键
+
+看实现类：alt+commed+b
 
 # 概述
 
@@ -3326,6 +3330,48 @@ snsapi_base 和 snsapi_userinfo两种获取信息
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http://bennyrhys.mynatapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirec
 ```
 
+### 手动版
+
+```java
+package com.bennyrhys.wechat_order.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+/**
+ * 公众号手动获取openid
+ * @Author bennyrhys
+ * @Date 2020-06-29 16:27
+ */
+@RestController
+@RequestMapping("/weixin")
+@Slf4j
+public class WeixinController {
+    @GetMapping("/auth")
+    public void auth(@RequestParam("code") String code) {
+        log.info("进入微信授权。。。");
+        log.info("code={}",code);
+
+        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxc10086806f4c0df0&secret=bdcb164ea61b4b1cc6846cd549325898&code="+ code +"&grant_type=authorization_code";
+        // 接收 json
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url, String.class);
+        log.info("response={}",response);
+//        oWBZiwSvnfae70D6wESTWbc0cDi4
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "lai";
+    }
+
+}
+```
+
 ### 第三方
 
 ```
@@ -3343,6 +3389,220 @@ https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&red
 ```
 
 weixin-java-mp，OAuth2网页授权，
+
+
+
+配置文件application.yml
+
+```yml
+# 配置微信公众号
+wechat:
+  mpAppId: wxc10086806f4c0df0
+  mpAppSecret: bdcb164ea61b4b1cc6846cd549325898
+```
+
+配置WechatMpConfig
+
+```java
+package com.bennyrhys.wechat_order.config;
+
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.WxMpConfigStorage;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信公众号sdk配置
+ * @Author bennyrhys
+ * @Date 2020-06-30 07:12
+ */
+@Component
+public class WechatMpConfig {
+
+    @Autowired
+     private WechatAccountConfig wechatAccountConfig;
+
+    @Bean
+    public WxMpService wxMpService() {
+        WxMpService wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(wxMpConfigStorage());
+        return wxMpService;
+    }
+
+    @Bean
+    public WxMpConfigStorage wxMpConfigStorage(){
+        WxMpDefaultConfigImpl wxMpConfigStorage = new WxMpDefaultConfigImpl();
+//      从配置文件读
+        wxMpConfigStorage.setAppId(wechatAccountConfig.getMpAppId());
+        wxMpConfigStorage.setSecret(wechatAccountConfig.getMpAppSecret());
+        return wxMpConfigStorage;
+    }
+}
+```
+
+账户信息WechatAccountConfig
+
+```java
+package com.bennyrhys.wechat_order.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信账号相关
+ * 获取配置文件的openid
+ * @Author bennyrhys
+ * @Date 2020-06-30 07:23
+ */
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "wechat")
+public class WechatAccountConfig {
+
+    private String mpAppId;
+    private String mpAppSecret;
+}
+```
+
+控制台
+
+```java
+package com.bennyrhys.wechat_order.controller;
+
+import com.bennyrhys.wechat_order.enums.ResultEnum;
+import com.bennyrhys.wechat_order.exception.SellException;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.net.URLEncoder;
+
+/**
+ * 公众号获取openid-第三方sdk
+ * @Author bennyrhys
+ * @Date 2020-06-29 21:27
+ */
+//@RestController // 返回的是json，要页面跳转得用@Controller
+@Controller
+@RequestMapping("/wechat")
+@Slf4j
+public class WechatController {
+
+    @Autowired
+    private WxMpService wxMpService;
+
+    /**
+     * 网页授权
+     * http://bennyrhys.mynatapp.cc/sell/wechat/authorize?returnUrl=http://www.imooc.com
+     * @param returnUrl
+     * @return
+     */
+    @GetMapping("/authorize")
+    public String authorize(@RequestParam("returnUrl") String returnUrl) {
+//        1. 公众号mp配置【公共config】
+//        2. 调用方法 网页授权获取code【重定向url(配置项目地址+方法地址)，scope，state】
+        String url = "http://bennyrhys.mynatapp.cc/sell/wechat/userInfo";
+        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode(returnUrl));
+        log.info("【微信网页授权】获取code，result={}", redirectUrl);
+
+        return "redirect:"+redirectUrl;
+    }
+
+    /**
+     * 获取用户信息-重定向的目的
+     */
+    @GetMapping("/userInfo")
+    public String userInfo(@RequestParam("code") String code,
+                         @RequestParam("state") String returnUrl) {
+        WxMpOAuth2AccessToken wxMpOAuth2AccessToken = new WxMpOAuth2AccessToken();
+        try {
+            wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
+        }catch (WxErrorException e) {
+            log.error("【微信网页授权】{}", e);
+            throw new SellException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
+        }
+//        获取openid
+        String openid = wxMpOAuth2AccessToken.getOpenId();
+        return "redirect:" + returnUrl + "?openid=" + openid;
+    }
+
+}
+```
+
+### 前端联调
+
+商铺信息api放到静态资源目录，直接渲染数据
+
+虚拟机代码配置前端跳转：cd /opt/code/sell_fe_buyer/config/index.js
+
+
+
+**修改前端路径**
+
+[root@localhost config]# vim index.js 
+
+```
+sellUrl: 'http://127.0.0.1',
+openidUrl: 'http://sell.springboot.cn/sell/wechat/authorize',
+wechatPayUrl: 'http://127.0.0.1'
+
+修改后
+sellUrl: 'http://sell.com',
+openidUrl: 'http://bennyrhys.mynatapp.cc/sell/wechat/authorize',
+wechatPayUrl: 'http://127.0.0.1'
+
+```
+
+重新构建前端项目
+
+```
+[root@localhost config]# cd ..
+
+[root@localhost sell_fe_buyer]# pwd
+
+/opt/code/sell_fe_buyer
+
+[root@localhost sell_fe_buyer]# npm run build
+
+// 生成文件覆盖网站目录文件
+[root@localhost sell_fe_buyer]# ls -al dist/
+总用量 8
+drwxr-xr-x.  3 root root   38 6月  30 00:42 .
+drwxr-xr-x. 10 root root 4096 4月  21 2017 ..
+-rw-r--r--.  1 root root  616 6月  30 00:43 index.html
+drwxr-xr-x.  4 root root   27 6月  30 00:43 static
+[root@localhost sell_fe_buyer]# cp -r dist/* /opt/data/wwwroot/sell/
+cp：是否覆盖"/opt/data/wwwroot/sell/index.html"？ y
+cp：是否覆盖"/opt/data/wwwroot/sell/static/css/reset.css"？ y
+cp：是否覆盖"/opt/data/wwwroot/sell/static/css/app.fc95ecb15d823cfb3172a7b93aaa741d.css"？ y
+cp：是否覆盖"/opt/data/wwwroot/sell/static/js/vendor.e8bcf9a796b8d5dbca42.js"？ y
+```
+
+
+
+场景
+
+注意：以下操作找个wifi，校园网不稳定
+
+微信访问sell.com，手机端无法访问host映射在电脑上。
+
+工具：charles安装配置 for Mac，win的fiddler
+
+解决访问：通过抓包和代理请求将微信请求映射到电脑访问
+
+确认手机ping通，设置http代理为电脑ip端口（8888） 
 
 ## 支付
 

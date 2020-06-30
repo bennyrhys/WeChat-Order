@@ -1,0 +1,434 @@
+InetAddress.getLocalHost().getHostName() took 5007 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 48561 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 109ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 2126 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 31.074 seconds (JVM running for 38.087)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 14 ms
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'returnUrl' is not present]
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'returnUrl' is not present]
+HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m16s821ms).
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5007 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 50339 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 105ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1800 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 25.691 seconds (JVM running for 31.572)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 17 ms
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5003 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 52693 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 121ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1851 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 26.068 seconds (JVM running for 32.169)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 11 ms
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5003 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 52943 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 128ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1873 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 26.391 seconds (JVM running for 32.815)
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5003 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 53296 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 90ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1681 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 26.642 seconds (JVM running for 33.052)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 20 ms
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=52s963ms).
+HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m42s106ms).
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com%2F&connect_redirect=1#wechat_redirect
+HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m17s884ms).
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5002 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 57396 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 118ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1772 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 26.03 seconds (JVM running for 31.963)
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5006 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 57693 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 123ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1791 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 25.953 seconds (JVM running for 31.825)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 13 ms
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'returnUrl' is not present]
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 58011 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 123ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1690 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 25.539 seconds (JVM running for 31.379)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 12 ms
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'returnUrl' is not present]
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'returnUrl' is not present]
+【微信网页授权】获取code，result=https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc10086806f4c0df0&redirect_uri=http%3A%2F%2Fbennyrhys.mynatapp.cc%2Fsell%2Fwechat%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2Fwww.imooc.com&connect_redirect=1#wechat_redirect
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 60293 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 87ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1534 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 25.523 seconds (JVM running for 32.032)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 8 ms
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting OrderServiceImplTest on bennyrhysdeMacBook-Pro.local with PID 62494 (started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 127ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Started OrderServiceImplTest in 28.965 seconds (JVM running for 31.819)
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'openid' is not present]
+Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required String parameter 'openid' is not present]
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5001 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting OrderServiceImplTest on bennyrhysdeMacBook-Pro.local with PID 62988 (started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 134ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Started OrderServiceImplTest in 33.192 seconds (JVM running for 35.815)
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 68473 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 82ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1408 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 24.509 seconds (JVM running for 30.654)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 13 ms
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 69561 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 94ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1502 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 24.675 seconds (JVM running for 30.52)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 20 ms
+Shutting down ExecutorService 'applicationTaskExecutor'
+Closing JPA EntityManagerFactory for persistence unit 'default'
+HikariPool-1 - Shutdown initiated...
+HikariPool-1 - Shutdown completed.
+InetAddress.getLocalHost().getHostName() took 5005 milliseconds to respond. Please verify your network configuration (macOS machines may need to add entries to /etc/hosts).
+Starting WechatOrderApplication on bennyrhysdeMacBook-Pro.local with PID 72864 (/Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order/target/classes started by bennyrhys in /Users/bennyrhys/Documents/Idea_Demo/WeChat-Order/wechat_order)
+No active profile set, falling back to default profiles: default
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 79ms. Found 4 JPA repository interfaces.
+Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.29]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1367 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate Core {5.4.9.Final}
+HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path '/sell'
+Started WechatOrderApplication in 24.47 seconds (JVM running for 30.299)
+Initializing Spring DispatcherServlet 'dispatcherServlet'
+Initializing Servlet 'dispatcherServlet'
+Completed initialization in 8 ms
