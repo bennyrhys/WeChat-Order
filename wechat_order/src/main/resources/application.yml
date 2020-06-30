@@ -35,5 +35,13 @@ server:
 
 # 配置微信公众号
 wechat:
-  mpAppId: wxc10086806f4c0df0
-  mpAppSecret: bdcb164ea61b4b1cc6846cd549325898
+#  用户授权-测试号
+#  mpAppId: wxc10086806f4c0df0
+#  mpAppSecret: bdcb164ea61b4b1cc6846cd549325898
+
+#  支付号-不用secret
+  mpAppId: wxd898fcb01713c658
+  mchId: 1483469312
+  mchKey: C5245D70627C1F8E9964D494B0735025
+  keyPath: /var/wechat-cert/h5.p12
+  notifyUrl: http/sell/pay/notify # 最好用外网地址【微信异步通知】

@@ -3284,7 +3284,7 @@ public class BuyerOrderController {
 官方文档
 https://mp.weixin.qq.com/wiki
 
-调试
+调试内网穿透
 https://natapp.cn
 
 第三方SDK .
@@ -3604,7 +3604,19 @@ cp：是否覆盖"/opt/data/wwwroot/sell/static/js/vendor.e8bcf9a796b8d5dbca42.j
 
 确认手机ping通，设置http代理为电脑ip端口（8888） 
 
+手机微信访问：sell.com
+
 ## 支付
+
+### 文档
+
+支付
+
+https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_1
+
+第三方SDK（用于各第三方SDK支付）
+
+https://github.com/Pay-Group/best-pay-sdk
 
 
 
@@ -3612,6 +3624,262 @@ cp：是否覆盖"/opt/data/wwwroot/sell/static/js/vendor.e8bcf9a796b8d5dbca42.j
 2. 微信授权 https://www.imooc.com/article/70497
 3. 微信支付 https://www.imooc.com/article/31607
 4. 扫码登录调试文档 见doc目录下的open.md
+
+### 在网页发起支付
+
+![image-20200630201849812](https://tva1.sinaimg.cn/large/007S8ZIlly1ggakypigvvj31g40eagy6.jpg)
+
+微信内H5调起支付,写到后端static/pay.html
+
+
+
+解决缺少total_fee:
+
+统一下单有total_fee字段返回预支付id就是total_fee，就是指预支付id不正确
+
+解决当前页面url未注册：
+
+公众平台-微信支付，开发配置，支付url最多5个，备案
+
+
+
+js静态模板下订单变动态，引入freemark模板。控制台返回ModelAndView路径。相应建立项目freemark文件
+
+
+
+配置账户信息application.yml
+
+```yml
+# 配置微信公众号
+wechat:
+#  用户授权-测试号
+#  mpAppId: wxc10086806f4c0df0
+#  mpAppSecret: bdcb164ea61b4b1cc6846cd549325898
+
+#  支付号-不用secret
+  mpAppId: wxd898fcb01713c658
+  mchId: 1483469312
+  mchKey: C5245D70627C1F8E9964D494B0735025
+  keyPath: /var/wechat-cert/h5.p12
+  notifyUrl: http/sell/pay/notify # 最好用外网地址【微信异步通知】
+```
+
+调用信息WechatAccountConfig
+
+```java
+package com.bennyrhys.wechat_order.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信账号相关
+ * 获取配置文件的openid
+ * @Author bennyrhys
+ * @Date 2020-06-30 07:23
+ */
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "wechat")
+public class WechatAccountConfig {
+
+    private String mpAppId;
+    private String mpAppSecret;
+    /*商户号*/
+    private String mchId;
+    /*商户秘钥*/
+    private String mchKey;
+    /*商户证书路径*/
+    private String keyPath;
+    /*微信异步通知*/
+    private String notifyUrl;
+}
+```
+
+支付配置WechatPayConfig
+
+```java
+package com.bennyrhys.wechat_order.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信账号相关
+ * 获取配置文件的openid
+ * @Author bennyrhys
+ * @Date 2020-06-30 07:23
+ */
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "wechat")
+public class WechatAccountConfig {
+
+    private String mpAppId;
+    private String mpAppSecret;
+    /*商户号*/
+    private String mchId;
+    /*商户秘钥*/
+    private String mchKey;
+    /*商户证书路径*/
+    private String keyPath;
+    /*微信异步通知*/
+    private String notifyUrl;
+}
+```
+
+转json看日志方便JsonUtil
+
+```java
+package com.bennyrhys.wechat_order.utils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+/**
+ * Json格式化工具
+ * @Author bennyrhys
+ * @Date 2020-06-30 20:05
+ */
+public class JsonUtil {
+//    对象格式化为json格式
+    public static String toJson(Object object) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        return gson.toJson(object);
+    }
+}
+```
+
+控制台模拟创建PayController
+
+```java
+package com.bennyrhys.wechat_order.controller;
+
+import com.bennyrhys.wechat_order.dto.OrderDTO;
+import com.bennyrhys.wechat_order.enums.ResultEnum;
+import com.bennyrhys.wechat_order.exception.SellException;
+import com.bennyrhys.wechat_order.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+/**
+ * 支付
+ * @Author bennyrhys
+ * @Date 2020-06-30 16:30
+ */
+
+@Controller
+@RequestMapping("pay")
+@Slf4j
+public class PayController {
+
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping("create")
+    public ModelAndView create(@RequestParam("orderId") String orderId,
+                               @RequestParam("returnUrl") String returnUrl) {
+//      1. 查询订单
+        OrderDTO orderDTO = orderService.findOne(orderId);
+        if (orderDTO == null) {
+            log.info("【支付】订单为空");
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+
+//        发起支付【支付逻辑写到paySerive】
+
+        return new ModelAndView("pay/create");
+    }
+}
+```
+
+测试模拟创建订单，PayServiceImplTest
+
+```java
+package com.bennyrhys.wechat_order.service.impl;
+
+import com.bennyrhys.wechat_order.dto.OrderDTO;
+import com.bennyrhys.wechat_order.service.OrderService;
+import com.bennyrhys.wechat_order.service.PayService;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * 微信支付
+ * @Author bennyrhys
+ * @Date 2020-06-30 19:48
+ */
+@SpringBootTest
+@Slf4j
+class PayServiceImplTest {
+
+    @Autowired
+    private PayService payService;
+    @Autowired
+    private OrderService orderService;
+
+    @Test
+    void create() {
+        OrderDTO orderDTO = orderService.findOne("1593336982853846059");
+        payService.create(orderDTO);
+    }
+}
+```
+
+静态请求。根据订单的返回信息修改js静态的请求参数。将支付请求在微信上访问请求
+
+static/pay.html
+
+```html
+<script>
+    function onBridgeReady(){
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                "appId":"wx2421b1c4370ec43b",     //公众号名称，由商户传入
+                "timeStamp":"1395712654",         //时间戳，自1970年以来的秒数
+                "nonceStr":"e61463f8efa94090b1f366cccfbbb444", //随机串
+                "package":"prepay_id=u802345jgfjsdfgsdg888",
+                "signType":"MD5",         //微信签名方式：
+                "paySign":"70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名
+            },
+            function(res){
+                if(res.err_msg == "get_brand_wcpay_request:ok" ){
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                }
+            });
+    }
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    }else{
+        onBridgeReady();
+    }
+</script>
+```
+
+
+
+
 
 ## 退款
 
