@@ -3879,7 +3879,126 @@ static/pay.html
 
 
 
+### 动态发起支付
 
+引入freemark模板，${}方式动态获取数据
+
+**虚拟机配置前端代码**index.js.外网的支付域名http://sell/wechat/pay/create，编译重新覆盖项目
+
+此时未修改状态，支付后还是显示支付
+
+通过charies在手机选择商品直接支付
+
+
+
+PayController
+
+```java
+package com.bennyrhys.wechat_order.controller;
+
+import com.bennyrhys.wechat_order.dto.OrderDTO;
+import com.bennyrhys.wechat_order.enums.ResultEnum;
+import com.bennyrhys.wechat_order.exception.SellException;
+import com.bennyrhys.wechat_order.service.OrderService;
+import com.bennyrhys.wechat_order.service.PayService;
+import com.lly835.bestpay.model.PayRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
+
+/**
+ * 支付
+ * @Author bennyrhys
+ * @Date 2020-06-30 16:30
+ */
+
+@Controller
+@RequestMapping("pay")
+@Slf4j
+public class PayController {
+
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private PayService payService;
+
+    @GetMapping("create")
+    public ModelAndView create(@RequestParam("orderId") String orderId,
+                               @RequestParam("returnUrl") String returnUrl,
+                               Map<String,Object> map){
+//      1. 查询订单
+        OrderDTO orderDTO = orderService.findOne(orderId);
+        if (orderDTO == null) {
+            log.info("【支付】订单为空");
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+
+//      2. 发起支付【支付逻辑写到paySerive】
+        PayRequest payRequest = payService.create(orderDTO);
+//      参数注入模板动态模板
+        map.put("orderId", "1111");
+        map.put("payRequest",payRequest);
+        map.put("returnUrl", returnUrl);
+        return new ModelAndView("pay/create", map);
+    }
+}
+```
+
+create.ftlh
+
+```html
+<#--这个文件名后缀 ftl是旧版-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>#[$]#</title>
+</head>
+<body>
+    <h1>这是模板内容${orderId}</h1>
+    <h1>${payRequest.openid}</h1>
+
+</body>
+</html>
+
+<#--静->动-->
+<script>
+    function onBridgeReady(){
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+                "appId":"${payResponse.appId}",     //公众号名称，由商户传入
+                "timeStamp":"${payResponse.timeStamp}",         //时间戳，自1970年以来的秒数
+                "nonceStr":"${payResponse.nonceStr}", //随机串
+                "package":"${payResponse.packAge}",
+                "signType":"MD5",         //微信签名方式：
+                "paySign":"${payResponse.paySign}" //微信签名
+            },
+            function(res){
+//                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+
+//                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                location.href = "${returnUrl}";
+            }
+        );
+    }
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    }else{
+        onBridgeReady();
+    }
+</script>
+```
 
 ## 退款
 
