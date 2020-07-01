@@ -4114,7 +4114,63 @@ public ModelAndView notify(@RequestBody String notifyData) {
 
 ## 退款
 
+买家和卖家都可以取消订单
 
+一年内可退
+
+退款拆分次数不可超50次
+
+证书双向绑定（微信支付-账户-安全，下载证书，放到本地配置路径，必须有可读权限）
+
+
+
+PayService
+
+```java
+/*退款*/
+RefundResponse refund(OrderDTO orderDTO);
+```
+
+PayServiceImpl
+
+```java
+/*退款*/
+@Override
+public RefundResponse refund(OrderDTO orderDTO) {
+    RefundRequest refundRequest = new RefundRequest();
+    refundRequest.setOrderId(orderDTO.getOrderId());
+    refundRequest.setOrderAmount(orderDTO.getOrderAmount().doubleValue());
+    refundRequest.setPayTypeEnum(BestPayTypeEnum.WXPAY_H5);
+    log.info("【微信退款】request={}",refundRequest);
+
+    RefundResponse refundResponse = bestPayService.refund(refundRequest);
+    log.info("【微信退款】response={}", refundResponse);
+
+    return refundResponse;
+}
+```
+
+测试PayServiceImplTest
+
+```java
+//    退款
+    @Test
+    void refund() {
+//        已支付订单号
+        OrderDTO orderDTO = orderService.findOne("1593336982853846059");
+        payService.refund(orderDTO);
+    }
+```
+
+补充退款逻辑OrderServiceImpl
+
+```java
+//        如果已支付需要退款
+        if(orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())) {
+            payService.refund(orderDTO);
+        }
+        return orderDTO;
+```
 
 # 扩展
 

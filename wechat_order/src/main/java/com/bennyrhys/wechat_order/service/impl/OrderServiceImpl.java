@@ -13,6 +13,7 @@ import com.bennyrhys.wechat_order.exception.SellException;
 import com.bennyrhys.wechat_order.repository.OrderDetailRepository;
 import com.bennyrhys.wechat_order.repository.OrderMasterRepository;
 import com.bennyrhys.wechat_order.service.OrderService;
+import com.bennyrhys.wechat_order.service.PayService;
 import com.bennyrhys.wechat_order.service.ProductSerice;
 import com.bennyrhys.wechat_order.utils.KeyUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMasterRepository orderMasterRepository;
+
+    @Autowired
+    private PayService payService;
 
     /**
      * 创建订单
@@ -183,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
         productSerice.increaseStock(cartDTOList);
 //        如果已支付需要退款
         if(orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())) {
-            // TODO
+            payService.refund(orderDTO);
         }
         return orderDTO;
     }

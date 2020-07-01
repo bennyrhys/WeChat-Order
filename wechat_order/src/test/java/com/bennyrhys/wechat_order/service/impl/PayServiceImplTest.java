@@ -26,7 +26,16 @@ class PayServiceImplTest {
 
     @Test
     void create() {
+//        待支付订单号
         OrderDTO orderDTO = orderService.findOne("1593336982853846059");
         payService.create(orderDTO);
+    }
+
+//    退款
+    @Test
+    void refund() {
+//        已支付订单号
+        OrderDTO orderDTO = orderService.findOne("1593336982853846059");
+        payService.refund(orderDTO);
     }
 }
