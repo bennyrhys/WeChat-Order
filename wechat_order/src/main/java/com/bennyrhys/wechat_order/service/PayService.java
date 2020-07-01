@@ -2,6 +2,7 @@ package com.bennyrhys.wechat_order.service;
 
 import com.bennyrhys.wechat_order.dto.OrderDTO;
 import com.lly835.bestpay.model.PayRequest;
+import com.lly835.bestpay.model.PayResponse;
 
 /**
  * 支付
@@ -10,4 +11,6 @@ import com.lly835.bestpay.model.PayRequest;
  */
 public interface PayService {
     PayRequest create(OrderDTO orderDTO);
+
+    PayResponse notify(String notifyData);
 }

@@ -4000,6 +4000,118 @@ create.ftlh
 </script>
 ```
 
+### 异步通知
+
+支付成功不能用前端通知，js微信团队说成功通知不可靠，并且前端代码容易被篡改
+
+
+
+yml的配置地址要和控制台请求的一致`notifyUrl: http/sell/pay/notify # 最好用外网地址【微信异步通知】`
+
+异步通知传入的xml中是微信提供的流水号
+
+收到通知，修改支付订单状态。写到service中,处理金额比较差值
+
+返回确认收到。防止微信一直发异步通知：收到异步通过修改订单支付状态后告知微信已经处理。API支付结果
+
+
+
+PayService
+
+```java
+PayResponse notify(String notifyData);
+```
+
+PayServiceImpl
+
+```java
+    /**
+     * 异步通知
+     * @param notifyData
+     * @return
+     */
+    @Override
+    public PayResponse notify(String notifyData) {
+        //1. 验证签名
+        //2. 支付的状态 best替做了前两件事情
+        //3. 支付金额
+        //4. 支付人(下单人 == 支付人)
+        PayResponse payResponse = bestPayService.asyncNotify(notifyData);
+        log.info("【微信支付】异步通知，PayResponse={}", JsonUtil.toJson(payResponse));
+
+//        查订单
+        OrderDTO orderDTO = orderService.findOne(payResponse.getOrderId());
+
+//        判断订单是否存在
+        if (orderDTO == null) {
+            log.error("【微信支付】异步通知，订单不存在.orderId={}",payResponse.getOrderId());
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+
+//        判断金额是否一致【金额比较不能Bigdecim和double比较，并且转换后还有小数不一致情况，所以相减解决】compareTo == 0 代表金额一致
+        if (!MathUtil.equals(payResponse.getOrderAmount(), orderDTO.getOrderAmount().doubleValue())) {
+            log.error("【微信支付】异步通知，订单金额不一致.orderId={}，微信通知金额={}，系统金额={}",
+                    payResponse.getOrderId(),
+                    payResponse.getOrderAmount(),
+                    orderDTO.getOrderAmount());
+            throw new SellException(ResultEnum.WXPAY_NOTIFY_MONEY_VERIFY_ERROR);
+        }
+
+//        修改订单支付状态
+        orderService.paid(orderDTO);
+        return payResponse;
+    }
+```
+
+处理金额的数学
+
+```java
+package com.bennyrhys.wechat_order.utils;
+
+/**
+ * 金额计算
+ * @Author bennyrhys
+ * @Date 2020-07-01 09:59
+ */
+public class MathUtil {
+
+    private static final Double MONEY_RANGE = 0.01;
+
+    /*比较两金额相减，判断金额一致*/
+    public static boolean equals(Double d1, Double d2) {
+        double result = Math.abs(d1 - d2);
+        return (result < MONEY_RANGE) ? true : false;
+    }
+}
+```
+
+PayController
+
+```java
+/**
+ * 微信异步通知
+ * 会传入xml的字符串
+ * 接收到通知，同步返回xml确认信息
+ * @param notifyData
+ */
+@PostMapping("/notify")
+public ModelAndView notify(@RequestBody String notifyData) {
+    payService.notify(notifyData);
+
+    //返回给微信处理结果
+    return new ModelAndView("pay/success");
+}
+```
+
+返回的信息templates/pay/success.ftl
+
+```xml
+<xml>
+    <return_code><![CDATA[SUCCESS]]></return_code>
+    <return_msg><![CDATA[OK]]></return_msg>
+</xml>
+```
+
 ## 退款
 
 
